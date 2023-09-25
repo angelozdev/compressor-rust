@@ -3,7 +3,7 @@ use std::fs::File;
 use std::io::{BufReader, BufWriter, Error, Read, Write};
 use std::time;
 
-use trying_rust::config::Config;
+use compressor::config::Config;
 
 const BUFFER_SIZE: usize = 1024;
 
