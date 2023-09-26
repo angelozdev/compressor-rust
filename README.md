@@ -30,18 +30,26 @@ cd compressor-rust
 cargo build --release
 ```
 
+4. Install the compressor globally:
+
+```bash
+cargo install --path .
+```
+
+Once installed, you can use the compressor from anywhere in your command line/terminal.
+
 ## Usage
 
 To compress a file, use the following command:
 
 ```bash
-./compressor <source>
+compressor <source> [<dir>]
 ```
 
 For example, to compress a file named `file.txt`, you would run:
 
 ```bash
-./compressor file.txt
+compressor file.txt
 ```
 
 This will produce a compressed file named `file.txt.gz`.

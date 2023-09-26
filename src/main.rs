@@ -1,6 +1,7 @@
 use flate2::{write::GzEncoder, Compression};
-use std::fs::File;
+use std::fs::{self, File};
 use std::io::{BufReader, BufWriter, Error, Read, Write};
+use std::path::Path;
 use std::time;
 
 use compressor::config::Config;
@@ -13,7 +14,7 @@ fn main() {
 
     println!("Compressing {}...", &config.source);
 
-    match compress_file(&config.source) {
+    match compress_file(&config.source, &config.dir) {
         Ok(_) => println!("{:?}", now.elapsed()),
         Err(e) => panic!("No se pudo comprimir el archivo: {}", e),
     }
@@ -38,11 +39,18 @@ fn read_in_chunks(file: &File, mut callback: impl FnMut(&[u8])) {
     }
 }
 
-fn compress_file(path: &str) -> Result<(), Error> {
+fn compress_file(path: &str, dir: &str) -> Result<(), Error> {
     let file = File::open(path)?;
 
-    let new_file_name = format!("{}.gz", path);
-    let new_file = File::create(&new_file_name)?;
+    let new_file_path = Path::new(dir).join(format!("{}.gz", path));
+
+    if let Some(parent) = new_file_path.parent() {
+        if !parent.exists() {
+            fs::create_dir_all(&parent)?;
+        }
+    }
+
+    let new_file = File::create(new_file_path)?;
     let writer = BufWriter::new(new_file);
     let mut encoder = GzEncoder::new(writer, Compression::default());
 
